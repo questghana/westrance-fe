@@ -13,4 +13,7 @@ export default defineConfig({
     port: 4000,
     open: "/",
   },
+  preview: {
+    allowedHosts: ['www.westrance.com']
+  }
 });
