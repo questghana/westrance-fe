@@ -40,13 +40,13 @@ const Navbar: React.FC = () => {
                     }
                   }}
                   key={item}
-                  className="text-white font-medium text-nowrap cursor-pointer"
-                  style={{
-                    WebkitTextStroke:
-                      item === "What We Do" ? "0.1px black" : "none",
-                    textShadow:
-                      item === "What We Do" ? "0 0 1px black" : "none",
-                  }}
+                  className="text-[#0A51BA] font-medium text-nowrap cursor-pointer"
+                  // style={{
+                  //   WebkitTextStroke:
+                  //     item === "What We Do" ? "0.1px black" : "none",
+                  //   textShadow:
+                  //     item === "What We Do" ? "0 0 1px black" : "none",
+                  // }}
                 >
                   {item}
                 </li>
