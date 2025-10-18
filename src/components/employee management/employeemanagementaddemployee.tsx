@@ -284,7 +284,7 @@ const Hospitalemployee = ({ goToStep }: Props) => {
                       render={() => (
                         <FormItem>
                           <FormLabel>
-                            Company Registration Number:{" "}
+                            Phone Number:{" "}
                             <span className="text-red-500">*</span>
                           </FormLabel>
                           <FormControl>
@@ -312,7 +312,7 @@ const Hospitalemployee = ({ goToStep }: Props) => {
                               <Input
                                 type="number"
                                 className="md:w-96 lg:w-70 py-7 bg-[#F8F8F8] appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                                placeholder="Enter registration number"
+                                placeholder="Enter Phone Number"
                                 value={
                                   form
                                     .getValues("companyContact")

@@ -167,7 +167,7 @@ const Hospitalemployee = () => {
             profilePhoto: base64Image,
           };
         }
-        const response = await axios.put(`http://localhost:4001/api/hospital/edit/employee`, payload)
+        const response = await axios.put(`/hospital/edit/employee`, payload)
         toast.success(response.data.message)
       }
     } catch (error: any) {
@@ -276,7 +276,7 @@ const Hospitalemployee = () => {
                       render={() => (
                         <FormItem>
                           <FormLabel>
-                            Company Registration Number:{" "}
+                            Phone Number:{" "}
                             <span className="text-red-500">*</span>
                           </FormLabel>
                           <FormControl>
@@ -304,7 +304,7 @@ const Hospitalemployee = () => {
                               <Input
                                 type="number"
                                 className="md:w-96 lg:w-70 py-7 bg-[#F8F8F8] appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                                placeholder="Enter registration number"
+                                placeholder="Enter Phone number"
                                 value={
                                   form
                                     .getValues("companyContact")
@@ -483,11 +483,9 @@ const Hospitalemployee = () => {
                       <SelectContent>
                         <SelectGroup>
                           <SelectLabel>Select Benefits</SelectLabel>
-                          <SelectItem value="OPDAccess">OPD Access</SelectItem>
-                          <SelectItem value="In-PatientCoverage">In-Patient Coverage</SelectItem>
-                          <SelectItem value="MedicinesAllowance">Medicines Allowance</SelectItem>
-                          <SelectItem value="DiagnosticTests">Diagnostic Tests</SelectItem>
-                          <SelectItem value="DentalVisionCare">Dental & Vision Care</SelectItem>
+                          <SelectItem value="In-Patient">In-Patient</SelectItem>
+                          <SelectItem value="Out-Patient">Out-Patient</SelectItem>
+                          <SelectItem value="Virtual Primary Care">Virtual Primary Care</SelectItem>
                         </SelectGroup>
                       </SelectContent>
                     </Select>

@@ -369,6 +369,7 @@ const Staffmanagement: React.FC<StaffManagementHeaderProps> = ({ goToStep }) => 
     const [currentPage, setCurrentPage] = useState(1)
     const [totalPages, setTotalPages] = useState(1)
     const limit = 10
+
     const handleAction = (action: string, row: Row<Data>) => {
         if (action === "employee management") {
             goToStep("view employee details");
@@ -398,7 +399,6 @@ const Staffmanagement: React.FC<StaffManagementHeaderProps> = ({ goToStep }) => 
         try {
             setLoading(true);
             const response = await axios.get(`/hospital/employees?page=${page}&limit=${limit}`);
-            // console.log(response);
             setEmployees(response.data.employees)
             const { totalPages, page: current } = response.data.pagination;
             setTotalPages(totalPages);
