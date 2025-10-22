@@ -1,12 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { Box } from '../ui/box'
 import { Card, CardContent, CardHeader } from '../ui/card'
 import { Alert, AlertDescription } from '../ui/alert'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
-import "react-phone-input-2/lib/style.css";
-import "react-phone-number-input/style.css";
-import PhoneInput from "react-phone-number-input";
 import { useNavigate } from 'react-router'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '../ui/select'
 import { useForm } from "react-hook-form"
@@ -19,7 +16,10 @@ const companydetailSchema = z.object({
   companyName: z.string({ required_error: "Company Name is required" }).min(1, 'Company Name cannot be empty'),
   companyType: z.string({ required_error: "Company Type is required" }).min(1, 'Company Type cannot be empty'),
   industry: z.string().optional(),
-  registrationNumber: z.string({ required_error: "Registration Number is required" }).min(1, "Registration Number cannot be empty"),
+  registrationNumber: z.string({ required_error: "Registration Number is required" })
+    .regex(/^[A-Za-z]{2}\d{9}$/,
+      "Format must be 11 characters: two letters + nine digits (e.g., CS#########)"
+    ),
   numberOfEmployees: z.preprocess((val) => {
     const num = Number(val);
     return isNaN(num) ? undefined : num;
@@ -28,14 +28,17 @@ const companydetailSchema = z.object({
       required_error: "Number of employees is required",
       invalid_type_error: "Enter a valid number",
     }).min(1, "Minimum 1 employee required")
-  )
+  ),
+  phoneNumber: z
+    .string({ required_error: "Phone Number is required" })
+    .regex(/^\d{11}$/, "Phone number must be exactly 11 digits"),
 })
 
 type CompanyDetailForm = z.infer<typeof companydetailSchema>
 
 const Companydetail: React.FC = () => {
   const navigate = useNavigate()
-  const [phoneNumber, setPhoneNumber] = useState<string | undefined>("");
+  
   const { setCompanyDetail, companyDetail } = useRegisterStore()
 
   const form = useForm<CompanyDetailForm>({
@@ -45,7 +48,8 @@ const Companydetail: React.FC = () => {
       companyType: "",
       industry: "",
       registrationNumber: "",
-      numberOfEmployees: 0
+      numberOfEmployees: 0,
+      phoneNumber: "",
     },
   })
 
@@ -63,6 +67,7 @@ const Companydetail: React.FC = () => {
       form.setValue("industry", companyDetail.industry)
       form.setValue("registrationNumber", companyDetail.registrationNumber || "")
       form.setValue("numberOfEmployees", companyDetail.numberOfEmployees || 0)
+      form.setValue("phoneNumber", companyDetail.phoneNumber || "")
     }
   }, [companyDetail])
 
@@ -159,9 +164,9 @@ const Companydetail: React.FC = () => {
                               </span>
                             </FormLabel>
                             <FormControl>
-                              <Input 
-                              className='md:w-96 bg-[#F8F8F8] placeholder:text-[#8E8E8E] placeholder:pl-2 py-7' 
-                              placeholder='Enter industry' />
+                              <Input
+                                className='md:w-96 bg-[#F8F8F8] placeholder:text-[#8E8E8E] placeholder:pl-2 py-7'
+                                placeholder='Enter industry' />
                             </FormControl>
                           </Box>
                           <FormMessage />
@@ -180,45 +185,21 @@ const Companydetail: React.FC = () => {
                               </span>
                             </FormLabel>
                             <FormControl>
-                              <Box className="flex flex-col lg:flex-row items-center gap-2 w-full">
-                                <Box className="bg-[#F4F4F4] text-[#222] py-3 px-3 rounded-md text-sm relative border border-[#DCDEE2]">
-                                  <PhoneInput
-                                    country="ru"
-                                    international
-                                    countryCallingCodeEditable={false}
-                                    defaultCountry="GH"
-                                    onChange={(value) => {
-                                      setPhoneNumber(value);
-                                      form.setValue(
-                                        "registrationNumber",
-                                        `${value || ""} ${form
-                                          .getValues("registrationNumber")
-                                          ?.split(" ")[1] || ""
-                                          }`.trim()
-                                      );
-                                    }}
-                                    className="custom-phone-input lg:w-18 md:w-90 py-1.5"
-                                  />
-                                </Box>
-                                <Input
-                                  {...field}
-                                  type="number"
-                                  value={
-                                    form
-                                      .getValues("registrationNumber")
-                                      ?.split(" ")[1] || ""
-                                  }
-                                  onChange={(e) => {
-                                    const regNumber = e.target.value;
-                                    form.setValue(
-                                      "registrationNumber",
-                                      `${phoneNumber || ""} ${regNumber}`.trim()
-                                    );
-                                  }}
-                                  className="appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none lg:w-70 md:w-96  bg-[#F8F8F8] placeholder:text-[#8E8E8E] placeholder:pl-2 py-7"
-                                  placeholder="Enter registration number"
-                                />
-                              </Box>
+                              <Input
+                                {...field}
+                                value={field.value?.toUpperCase() ?? ""}
+                                onChange={(e) => {
+                                  const next = e.target.value
+                                    .toUpperCase()
+                                    .replace(/[^A-Z0-9]/g, '')
+                                    .slice(0, 11);
+                                  field.onChange(next);
+                                }}
+                                maxLength={11}
+                                inputMode="text"
+                                className="md:w-96 bg-[#F8F8F8] placeholder:text-[#8E8E8E] placeholder:pl-2 py-7"
+                                placeholder="CS#########"
+                              />
                             </FormControl>
                           </Box>
                           <FormMessage />
@@ -227,7 +208,7 @@ const Companydetail: React.FC = () => {
                     />
                   </Box>
 
-                  <Box className='flex flex-row gap-10'>
+                  <Box className='flex flex-col lg:flex-row gap-10'>
                     <FormField
                       control={control}
                       name="numberOfEmployees"
@@ -243,7 +224,7 @@ const Companydetail: React.FC = () => {
                               <Input
                                 {...field}
                                 type='number'
-                                className='appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none md:w-96 bg-[#F8F8F8] placeholder:text-[#8E8E8E] placeholder:pl-2 py-7' 
+                                className='appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none md:w-96 bg-[#F8F8F8] placeholder:text-[#8E8E8E] placeholder:pl-2 py-7'
                                 placeholder='Enter number of employees' />
                             </FormControl>
                           </Box>
@@ -251,6 +232,36 @@ const Companydetail: React.FC = () => {
                         </FormItem>
                       )}
                     />
+                      <FormField
+                        control={control}
+                        name="phoneNumber"
+                        render={({ field }) => (
+                          <FormItem>
+                            <Box className='flex flex-col gap-1'>
+                              <FormLabel>
+                                <label className="text-sm font-medium">
+                                  Phone Number: <span className="text-red-500">*</span>
+                                </label>
+                              </FormLabel>
+                              <FormControl>
+                                <Input
+                                  {...field}
+                                  value={(field.value || "").replace(/\D/g, '').slice(0, 11)}
+                                  onChange={(e) => {
+                                    const digitsOnly = e.target.value.replace(/\D/g, '').slice(0, 11);
+                                    field.onChange(digitsOnly);
+                                  }}
+                                  inputMode='numeric'
+                                  pattern='\d{11}'
+                                  maxLength={11}
+                                  className='appearance-none md:w-96 bg-[#F8F8F8] placeholder:text-[#8E8E8E] placeholder:pl-2 py-7'
+                                  placeholder='Enter 11-digit phone number' />
+                              </FormControl>
+                            </Box>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                   </Box>
                 </Box>
               </form>

@@ -19,7 +19,7 @@ const passwordSecuritySchema = z.object({
     administrativeName: z.string({ required_error: "Administrative Name is required" }).min(1, 'Administrative Name cannot be empty'),
     administrativeEmail: z.string({ required_error: "Administrative Email Address is required" }).min(1, 'Administrative Email cannot be empty').email('Invalid email address'),
     createPassword: z.string({ required_error: "Password must be at least 8 characters" }).min(8, "Password cannot be empty"),
-    confirmPassword: z.string({ required_error: "Confirm password must be at least 8 characters" }).min(8, "Confirm cannot be empty"),
+    confirmPassword: z.string({ required_error: "Confirm password must be at least 8 characters" }).min(8, "Passwords do not match"),
 })
     .refine((data) => data.createPassword === data.confirmPassword, {
         message: "Passwords do not match",

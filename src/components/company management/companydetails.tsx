@@ -179,13 +179,19 @@ export const CompanyDetails: FC<CompanyManagementHeaderProps> = ({ ...props }) =
                     <Box className="w-52 text-gray-400 font-normal text-[15px]">
                       Registered Phone Number:
                     </Box>
-                    <Box>{selectedCompany?.PhoneNumber}</Box>
+                    <Box>{selectedCompany?.registrationNumber}</Box>
                   </Flex>
                   <Flex className="gap-0">
                     <Box className="w-52 text-gray-400 font-normal text-[15px]">
                       Numbers of Employess:
                     </Box>
                     <Box>{selectedCompany?.numberOfEmployees}</Box>
+                  </Flex>
+                   <Flex className="gap-0">
+                    <Box className="w-52 text-gray-400 font-normal text-[15px]">
+                        Phone Number:
+                    </Box>
+                    <Box>{selectedCompany?.phoneNumber}</Box>
                   </Flex>
                 </Stack>
 

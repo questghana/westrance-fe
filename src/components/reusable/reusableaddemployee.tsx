@@ -3,7 +3,6 @@ import { Box } from "../ui/box";
 import { Flex } from "../ui/flex";
 import { Stack } from "../ui/stack";
 import { Input } from "../ui/input";
-import PhoneInputWithCountrySelect from "react-phone-number-input";
 import "react-phone-input-2/lib/style.css";
 import "react-phone-number-input/style.css";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -50,7 +49,9 @@ const addEmployeeSchema = z
     middleName: z.string().optional(),
     lastName: z.string().min(1, "Last name is required"),
     email: z.string().email("Invalid email address"),
-    companyContact: z.string().min(1, "Company contact details are required"),
+    companyContact: z
+      .string()
+      .regex(/^\+\d{1,5}\s\d{11}$/, "Use format +<code> <11-digit number> e.g. +233 01234567890"),
     startingDate: z.date({ required_error: "Starting date is required" }),
     duration: z.string().min(1, "Please select a duration"),
     amount: z.string().min(1, "Amount is required"),
@@ -80,9 +81,9 @@ export const ReusableAddEmployee = ({ onGoToList }: ReusableAddEmployeeProps) =>
   const [isChecked, setIsChecked] = useState<CheckedState>(false);
   const [open, setOpen] = useState(false);
   const [copytxt, setCopytxt] = useState("");
-  const { addEmployee} = useAuthStore()
+  const { addEmployee } = useAuthStore()
   const { selectedEmployee, mode } = useViewEmployeeStore()
-  const [phoneNumber, setPhoneNumber] = useState<string | undefined>("");
+  const [countryCode, setCountryCode] = useState<string>("+233");
   const [isLoading, setIsLoading] = useState(false);
   const form = useForm<AddEmployeeForm>({
     resolver: zodResolver(addEmployeeSchema),
@@ -104,11 +105,9 @@ export const ReusableAddEmployee = ({ onGoToList }: ReusableAddEmployeeProps) =>
   });
 
   const Benefits = [
-    "OPD Access",
-    "In-Patient Coverage",
-    "Medicines Allowance",
-    "Diagnostic Tests",
-    "Dental & Vision Care",
+    "In-Patient",
+    "Out-Patient",
+    "Virtual Primary Care",
   ];
 
   const HandlefileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -194,8 +193,19 @@ export const ReusableAddEmployee = ({ onGoToList }: ReusableAddEmployeeProps) =>
 
   useEffect(() => {
     if (mode === "edit" && selectedEmployee) {
-      const [phone] = selectedEmployee.registrationNumber.split(" ");
-      setPhoneNumber(phone);
+      const raw = selectedEmployee.registrationNumber || "";
+      const codeMatch = raw.match(/^\+\d{1,5}/);
+      let code = "+233";
+      let local = "";
+      if (codeMatch) {
+        code = codeMatch[0];
+        const restDigits = raw.slice(codeMatch[0].length).replace(/\D/g, "");
+        local = restDigits.slice(0, 11);
+      } else {
+        const digitsOnly = raw.replace(/\D/g, "");
+        local = digitsOnly.length >= 11 ? digitsOnly.slice(-11) : digitsOnly;
+      }
+      setCountryCode(code);
       setPreviewUrl(selectedEmployee.profileImage || '');
       setFilename("Uploaded Image");
       form.reset({
@@ -204,7 +214,7 @@ export const ReusableAddEmployee = ({ onGoToList }: ReusableAddEmployeeProps) =>
         middleName: selectedEmployee.middleName || "",
         lastName: selectedEmployee.lastName,
         email: selectedEmployee.emailAddress,
-        companyContact: selectedEmployee.registrationNumber,
+        companyContact: `${code} ${local}`.trim(),
         startingDate: new Date(selectedEmployee.startingDate),
         duration: selectedEmployee.duration,
         amount: selectedEmployee.amountPackage,
@@ -215,7 +225,7 @@ export const ReusableAddEmployee = ({ onGoToList }: ReusableAddEmployeeProps) =>
         profilePhoto: selectedEmployee?.profileImage || '',
       });
     } else {
-      setPhoneNumber("");
+      setCountryCode("+233");
       setPreviewUrl(null);
       form.reset();
     }
@@ -317,50 +327,39 @@ export const ReusableAddEmployee = ({ onGoToList }: ReusableAddEmployeeProps) =>
                     <FormField
                       control={form.control}
                       name="companyContact"
-                      render={() => (
+                      render={({ field }) => (
                         <FormItem>
                           <FormLabel>
-                            Phone Number:{" "}
+                            Phone Number: {" "}
                             <span className="text-red-500">*</span>
                           </FormLabel>
                           <FormControl>
                             <Box className="flex flex-col lg:flex-row items-center gap-2 w-[100%]">
-                              <Box className="bg-[#F4F4F4] text-[#222] py-3 px-3 rounded-md text-sm relative border border-[#DCDEE2]">
-                                <PhoneInputWithCountrySelect
-                                  country="ru"
-                                  international
-                                  countryCallingCodeEditable={false}
-                                  defaultCountry="GH"
-                                  value={phoneNumber}
-                                  onChange={(value) => {
-                                    setPhoneNumber(value);
-                                    form.setValue(
-                                      "companyContact",
-                                      `${value || ""} ${form
-                                        .getValues("companyContact")
-                                        ?.split(" ")[1] || ""
-                                        }`.trim()
-                                    );
-                                  }}
-                                  className="custom-phone-input lg:w-18 md:w-90 py-1.5"
-                                  />
-                              </Box>
                               <Input
-                                type="number"
-                                className="md:w-96 lg:w-70 py-7 bg-[#F8F8F8] appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                                placeholder="Enter Phone Number"
-                                value={
-                                  form
-                                    .getValues("companyContact")
-                                    ?.split(" ")[1] || ""
-                                }
+                                value={countryCode}
                                 onChange={(e) => {
-                                  const regNumber = e.target.value;
-                                  form.setValue(
-                                    "companyContact",
-                                    `${phoneNumber || ""} ${regNumber}`.trim()
-                                  );
+                                  const next = e.target.value
+                                    .replace(/[^+\d]/g, '')
+                                    .replace(/(?!^)[+]/g, '')
+                                    .slice(0, 5);
+                                  setCountryCode(next);
+                                  const local = (form.getValues('companyContact')?.split(' ')[1] || '');
+                                  form.setValue('companyContact', `${next} ${local}`.trim(), { shouldValidate: true, shouldDirty: true });
                                 }}
+                                className="bg-[#F4F4F4] text-[#222] py-7 px-3 rounded-md text-sm border border-[#DCDEE2] w-24"
+                                placeholder="+233"
+                              />
+                              <Input
+                                value={(field.value?.split(' ')[1] || '').replace(/\D/g, '').slice(0, 11)}
+                                onChange={(e) => {
+                                  const local = e.target.value.replace(/\D/g, '').slice(0, 11);
+                                  form.setValue('companyContact', `${countryCode} ${local}`.trim(), { shouldValidate: true, shouldDirty: true });
+                                }}
+                                inputMode="numeric"
+                                pattern="\d{11}"
+                                maxLength={11}
+                                className="md:w-96 bg-[#F8F8F8] placeholder:text-[#8E8E8E] placeholder:pl-2 py-7"
+                                placeholder="Enter 11-digit number"
                               />
                             </Box>
                           </FormControl>

@@ -6,6 +6,7 @@ type CompanyDetail = {
   industry?: string;
   registrationNumber: string;
   numberOfEmployees: number;
+  phoneNumber: string;
 };
 
 type LocationDetail = {

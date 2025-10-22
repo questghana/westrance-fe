@@ -7,15 +7,34 @@ import Planssection from '@/components/home/Planssection'
 import Servicesection from '@/components/home/servicesection'
 import Structuresection from '@/components/home/structuresection'
 import { Box } from '@/components/ui/box'
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useLocation } from 'react-router'
 
 const Home: React.FC = () => {
+  const location = useLocation()
+
+  useEffect(() => {
+    if (location.hash) {
+      const targetId = location.hash.replace('#', '')
+      const el = document.getElementById(targetId)
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }
+    }
+  }, [location.hash])
+
   return (
     <Box>
         <Herosection/>
-        <Servicesection/>
-        <Structuresection/>
-        <Experiencesection/>
+        <Box id="what-we-do">
+          <Servicesection/>
+        </Box>
+        <Box id="what-we-serve">
+          <Structuresection/>
+        </Box>
+        <Box id="about-us">
+          <Experiencesection/>
+        </Box>
         <EmployerExperience/>
         <Member/>
         <Planssection/>

@@ -38,6 +38,7 @@ export interface Companydetails {
   industry?: string | null;
   website?: string | null;
   numberOfEmployees: number;
+  phoneNumber: string;
   profileImage?: string | null;
   region: string;
   registrationNumber: string;

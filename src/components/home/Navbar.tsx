@@ -32,11 +32,11 @@ const Navbar: React.FC = () => {
                 <li
                   onClick={() => {
                     if (item === "What We Do") {
-                      router("/");
+                      router("/#what-we-do");
                     } else if (item === "What We Serve") {
-                      router("/");
+                      router("/#what-we-serve");
                     } else if (item === "About Us") {
-                      router("/");
+                      router("/#about-us");
                     }
                   }}
                   key={item}
@@ -94,11 +94,11 @@ const Navbar: React.FC = () => {
                         <li
                           onClick={() => {
                             if (item === "What We Do") {
-                              router("/");
+                              router("/#what-we-do");
                             } else if (item === "What We Serve") {
-                              router("/");
+                              router("/#what-we-serve");
                             } else if (item === "About Us") {
-                              router("/");
+                              router("/#about-us");
                             }
                           }}
                           key={item}

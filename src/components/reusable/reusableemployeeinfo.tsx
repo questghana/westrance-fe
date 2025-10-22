@@ -54,7 +54,7 @@ export const ReusableEmployeeInfor: FC<ReusableEmployeeInforProps> = ({ headings
               </Box>
             </Box>
             <Box className="md:gap-10 flex flex-col md:flex-row justify-center text-gray-400">
-              Registration Number:
+              Phone Number:
               <Box className="text-black font-medium text-[15px] capitalize ">
                 {selectedEmployee?.registrationNumber || employee?.PhoneNumber}
               </Box>

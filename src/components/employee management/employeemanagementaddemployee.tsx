@@ -15,7 +15,6 @@ import { CheckedState } from "@radix-ui/react-checkbox";
 import { Loader, Minus, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import PhoneInputWithCountrySelect from "react-phone-number-input";
 import { z } from "zod";
 import calender from "/companyside/calender.svg";
 import { format } from "date-fns";
@@ -34,7 +33,9 @@ const HospitalEmployeeSchema = z
     middleName: z.string().optional(),
     lastName: z.string().min(1, "Last name is required"),
     email: z.string().email("Invalid email address"),
-    companyContact: z.string().min(1, "Company contact details are required"),
+    companyContact: z
+      .string()
+      .regex(/^\+\d{1,5}\s\d{11}$/, "Use format +<code> <11-digit number> e.g. +233 01234567890"),
     startingDate: z.date({ required_error: "Starting date is required" }),
     duration: z.string().min(1, "Please select a duration"),
     amount: z.string().min(1, "Amount is required"),
@@ -64,7 +65,7 @@ const Hospitalemployee = ({ goToStep }: Props) => {
   const [open, setOpen] = useState(false);
   // const [copytxt, setCopytxt] = useState("");
   // const { addEmployee, token } = useAuthStore()
-  const [phoneNumber, setPhoneNumber] = useState<string | undefined>("");
+  const [countryCode, setCountryCode] = useState<string>("+233");
   const [isLoading, setIsLoading] = useState(false);
   const { addEmployee } = useAuthStore();
   const { selectedEmployee, mode } = useViewEmployeeStore()
@@ -117,8 +118,23 @@ const Hospitalemployee = ({ goToStep }: Props) => {
 
   useEffect(() => {
     if (mode === "edit" && selectedEmployee) {
-      const [phone] = selectedEmployee.registrationNumber.split(" ");
-      setPhoneNumber(phone);
+      const raw = selectedEmployee.registrationNumber || "";
+      const codeMatch = raw.match(/^\+\d{1,5}/);
+      let code = "+233";
+      let local = "";
+      if (codeMatch) {
+        code = codeMatch[0];
+        const restDigits = raw.slice(codeMatch[0].length).replace(/\D/g, "");
+        local = restDigits.slice(0, 11);
+      } else {
+        const digitsOnly = raw.replace(/\D/g, "");
+        if (digitsOnly.length >= 11) {
+          local = digitsOnly.slice(-11);
+        } else {
+          local = digitsOnly;
+        }
+      }
+      setCountryCode(code);
       setPreviewUrl(selectedEmployee.profileImage || '');
       setFilename("Uploaded Image");
       form.reset({
@@ -127,7 +143,7 @@ const Hospitalemployee = ({ goToStep }: Props) => {
         middleName: selectedEmployee.middleName || "",
         lastName: selectedEmployee.lastName,
         email: selectedEmployee.emailAddress,
-        companyContact: selectedEmployee.registrationNumber,
+        companyContact: `${code} ${local}`.trim(),
         startingDate: new Date(selectedEmployee.startingDate),
         duration: selectedEmployee.duration,
         amount: selectedEmployee.amountPackage,
@@ -155,7 +171,6 @@ const Hospitalemployee = ({ goToStep }: Props) => {
           };
         }
         const response = await axios.post("/admin/add-Employee", payload)
-        console.log(response);
         toast.success(response.data.message)
         const employee = response.data.data.employee
         addEmployee(employee)
@@ -281,50 +296,39 @@ const Hospitalemployee = ({ goToStep }: Props) => {
                     <FormField
                       control={form.control}
                       name="companyContact"
-                      render={() => (
+                      render={({ field }) => (
                         <FormItem>
                           <FormLabel>
-                            Phone Number:{" "}
+                            Phone Number: {" "}
                             <span className="text-red-500">*</span>
                           </FormLabel>
                           <FormControl>
                             <Box className="flex flex-col lg:flex-row items-center gap-2 w-[100%]">
-                              <Box className="bg-[#F4F4F4] text-[#222] py-3 px-3 rounded-md text-sm relative border border-[#DCDEE2]">
-                                <PhoneInputWithCountrySelect
-                                  country="ru"
-                                  international
-                                  countryCallingCodeEditable={false}
-                                  defaultCountry="GH"
-                                  value={phoneNumber}
-                                  onChange={(value) => {
-                                    setPhoneNumber(value);
-                                    form.setValue(
-                                      "companyContact",
-                                      `${value || ""} ${form
-                                        .getValues("companyContact")
-                                        ?.split(" ")[1] || ""
-                                        }`.trim()
-                                    );
-                                  }}
-                                  className="custom-phone-input lg:w-18 md:w-90 py-1.5"
-                                />
-                              </Box>
                               <Input
-                                type="number"
-                                className="md:w-96 lg:w-70 py-7 bg-[#F8F8F8] appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                                placeholder="Enter Phone Number"
-                                value={
-                                  form
-                                    .getValues("companyContact")
-                                    ?.split(" ")[1] || ""
-                                }
+                                value={countryCode}
                                 onChange={(e) => {
-                                  const regNumber = e.target.value;
-                                  form.setValue(
-                                    "companyContact",
-                                    `${phoneNumber || ""} ${regNumber}`.trim()
-                                  );
+                                  const next = e.target.value
+                                    .replace(/[^+\d]/g, '')
+                                    .replace(/(?!^)[+]/g, '')
+                                    .slice(0, 5);
+                                  setCountryCode(next);
+                                  const local = (form.getValues('companyContact')?.split(' ')[1] || '');
+                                  form.setValue('companyContact', `${next} ${local}`.trim(), { shouldValidate: true, shouldDirty: true });
                                 }}
+                                className="bg-[#F4F4F4] text-[#222] py-7 px-3 rounded-md text-sm border border-[#DCDEE2] w-24"
+                                placeholder="+233"
+                              />
+                              <Input
+                                value={(field.value?.split(' ')[1] || '').replace(/\D/g, '').slice(0, 11)}
+                                onChange={(e) => {
+                                  const local = e.target.value.replace(/\D/g, '').slice(0, 11);
+                                  form.setValue('companyContact', `${countryCode} ${local}`.trim(), { shouldValidate: true, shouldDirty: true });
+                                }}
+                                inputMode="numeric"
+                                pattern="\d{11}"
+                                maxLength={11}
+                                className="md:w-96 bg-[#F8F8F8] placeholder:text-[#8E8E8E] placeholder:pl-2 py-7"
+                                placeholder="Enter 11-digit number"
                               />
                             </Box>
                           </FormControl>
@@ -491,11 +495,9 @@ const Hospitalemployee = ({ goToStep }: Props) => {
                       <SelectContent>
                         <SelectGroup>
                           <SelectLabel>Select Benefits</SelectLabel>
-                          <SelectItem value="OPDAccess">OPD Access</SelectItem>
-                          <SelectItem value="In-PatientCoverage">In-Patient Coverage</SelectItem>
-                          <SelectItem value="MedicinesAllowance">Medicines Allowance</SelectItem>
-                          <SelectItem value="DiagnosticTests">Diagnostic Tests</SelectItem>
-                          <SelectItem value="DentalVisionCare">Dental & Vision Care</SelectItem>
+                          <SelectItem value="In-Patient">In-Patient</SelectItem>
+                          <SelectItem value="Out-Patient">Out-Patient</SelectItem>
+                          <SelectItem value="Virtual Primary Care">Virtual Primary Care</SelectItem>
                         </SelectGroup>
                       </SelectContent>
                     </Select>

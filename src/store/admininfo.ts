@@ -45,7 +45,8 @@ type companyinfo = {
   numberOfEmployees: number;
   profileImage: string;
   region: string;
-  PhoneNumber: string;
+  registrationNumber: string;
+  phoneNumber: string;
   website: string;
   companyId: string;
   isActive: boolean;

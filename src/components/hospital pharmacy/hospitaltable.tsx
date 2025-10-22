@@ -158,7 +158,7 @@ export const columns = (
         </Flex>
       ),
       cell: ({ row }) => (
-        <Box className="lowercase text-start pr-6">
+        <Box className="text-start pr-6">
           {" "}
           {/* Add pr-6 for right padding */}
           {row.original.registrationNumber}
