@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Routes } from "react-router";
 import { SettingsPage } from "./pages/settings.page";
 import DashboardPage from "./pages/dashboard.page";
 import { NotFound } from "./pages/notfound.page";
-import Home from "./pages/home.page";
+// import Home from "./pages/home.page";
 import Login from "./pages/signin.pagecopy";
 import { AuthenticationLayout } from "./layouts/authentication.layout";
 import Companydetail from "./components/register/companydetail";
@@ -49,8 +49,8 @@ export const Router = () => {
     <BrowserRouter>
       <Routes>
         <Route element={<Publicroutes />}>
-        <Route path="/" element={<Home />} />
-        <Route path="/signin" element={<Login />} />
+        {/* <Route path="/" element={<Home />} /> */}
+        <Route path="/" element={<Login />} />
         <Route path="/forgotpassword" element={<ForgotpasswordForm />} />
         <Route path="/resetpassword" element={<ResetPasswordForm />} />
         <Route path="/admin-login" element={<Dashboardlogin />} />

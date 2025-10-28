@@ -106,7 +106,7 @@ export const AppSidebar: FC<AppSidebarProps> = ({ navItems, ...props }) => {
         await axios.get(logoutUrl)
         authState.clearAuth()
         setTimeout(() => {
-          navigate("/signin");
+          navigate("/");
         }, 1000);
       }
       toast.success("Logout success");

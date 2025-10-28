@@ -110,7 +110,7 @@ export const ForgotpasswordForm = () => {
                   {loading ? <Loader className='animate-spin' /> : "Send Reset Link"}
                 </Button>
                 <p
-                  onClick={() => navigate("/signin")}
+                  onClick={() => navigate("/")}
                   className="text-sm text-[#1E6EE5] underline text-center mt-2 cursor-pointer"
                 >
                   Back to Sign In

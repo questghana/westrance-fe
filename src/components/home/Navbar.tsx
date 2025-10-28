@@ -56,7 +56,7 @@ const Navbar: React.FC = () => {
 
           {/* Auth Buttons - Hidden on mobile */}
           <Flex className="hidden lg:flex flex-1 justify-end gap-2 md:gap-4">
-            <Link to={"/signin"}>
+            <Link to={"/"}>
               <Button
                 variant={"ghost"}
                 className="text-[#0A51BA] cursor-pointer text-sm md:text-base"
@@ -118,7 +118,7 @@ const Navbar: React.FC = () => {
                 </SheetDescription>
               </SheetHeader>
                 <Flex className="px-2">
-                  <Link to={"/signin"}>
+                  <Link to={"/"}>
                     <Button
                       variant={"ghost"}
                       className="text-[#0A51BA] cursor-pointer text-sm md:text-base"

@@ -14,6 +14,6 @@ export default defineConfig({
     open: "/",
   },
   preview: {
-    allowedHosts: ['www.westrance.com']
+    allowedHosts: ['app.westrance.com']
   }
 });

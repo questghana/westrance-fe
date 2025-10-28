@@ -5,7 +5,7 @@ export const Protectedroutes = ({ allowedRoles }: { allowedRoles: string[] }) =>
   const { role, company, isAuthenticated } = useAuthStore();
 
   if (!isAuthenticated) {
-    return <Navigate to="/signin" replace />;
+    return <Navigate to="/" replace />;
   }
 
   if (!allowedRoles.includes(role || "")) {
