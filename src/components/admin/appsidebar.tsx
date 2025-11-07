@@ -123,7 +123,7 @@ export const AppSidebar: FC<AppSidebarProps> = ({ navItems, ...props }) => {
     >
       <SidebarHeader className="relative">
         <Logo
-          to="/"
+          to=""
           isCompact={state === "collapsed"}
           className={state === "collapsed" ? "m-auto mt-4" : undefined}
           containerClassName={cn(

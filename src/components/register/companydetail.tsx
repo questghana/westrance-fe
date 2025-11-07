@@ -31,7 +31,7 @@ const companydetailSchema = z.object({
   ),
   phoneNumber: z
     .string({ required_error: "Phone Number is required" })
-    .regex(/^\d{11}$/, "Phone number must be exactly 11 digits"),
+    .regex(/^\d{10}$/, "Phone number must be exactly 10 digits"),
 })
 
 type CompanyDetailForm = z.infer<typeof companydetailSchema>
@@ -246,16 +246,16 @@ const Companydetail: React.FC = () => {
                               <FormControl>
                                 <Input
                                   {...field}
-                                  value={(field.value || "").replace(/\D/g, '').slice(0, 11)}
+                                  value={(field.value || "").replace(/\D/g, '').slice(0, 10)}
                                   onChange={(e) => {
-                                    const digitsOnly = e.target.value.replace(/\D/g, '').slice(0, 11);
+                                    const digitsOnly = e.target.value.replace(/\D/g, '').slice(0, 10);
                                     field.onChange(digitsOnly);
                                   }}
                                   inputMode='numeric'
-                                  pattern='\d{11}'
-                                  maxLength={11}
+                                  pattern='\d{10}'
+                                  maxLength={10}
                                   className='appearance-none md:w-96 bg-[#F8F8F8] placeholder:text-[#8E8E8E] placeholder:pl-2 py-7'
-                                  placeholder='Enter 11-digit phone number' />
+                                  placeholder='Enter 10-digit phone number' />
                               </FormControl>
                             </Box>
                             <FormMessage />

@@ -35,7 +35,7 @@ const HospitalEmployeeSchema = z
     email: z.string().email("Invalid email address"),
     companyContact: z
       .string()
-      .regex(/^\+\d{1,5}\s\d{11}$/, "Use format +<code> <11-digit number> e.g. +233 01234567890"),
+      .regex(/^\+\d{1,5}\s\d{10}$/, "Use format +<code> <10-digit number> e.g. +233 0123456789"),
     startingDate: z.date({ required_error: "Starting date is required" }),
     duration: z.string().min(1, "Please select a duration"),
     amount: z.string().min(1, "Amount is required"),
@@ -125,11 +125,11 @@ const Hospitalemployee = ({ goToStep }: Props) => {
       if (codeMatch) {
         code = codeMatch[0];
         const restDigits = raw.slice(codeMatch[0].length).replace(/\D/g, "");
-        local = restDigits.slice(0, 11);
+        local = restDigits.slice(0, 10);
       } else {
         const digitsOnly = raw.replace(/\D/g, "");
-        if (digitsOnly.length >= 11) {
-          local = digitsOnly.slice(-11);
+        if (digitsOnly.length >= 10) {
+          local = digitsOnly.slice(-10);
         } else {
           local = digitsOnly;
         }
@@ -319,16 +319,16 @@ const Hospitalemployee = ({ goToStep }: Props) => {
                                 placeholder="+233"
                               />
                               <Input
-                                value={(field.value?.split(' ')[1] || '').replace(/\D/g, '').slice(0, 11)}
+                                value={(field.value?.split(' ')[1] || '').replace(/\D/g, '').slice(0, 10)}
                                 onChange={(e) => {
-                                  const local = e.target.value.replace(/\D/g, '').slice(0, 11);
+                                  const local = e.target.value.replace(/\D/g, '').slice(0, 10);
                                   form.setValue('companyContact', `${countryCode} ${local}`.trim(), { shouldValidate: true, shouldDirty: true });
                                 }}
                                 inputMode="numeric"
-                                pattern="\d{11}"
-                                maxLength={11}
+                                pattern="\d{10}"
+                                maxLength={10}
                                 className="md:w-96 bg-[#F8F8F8] placeholder:text-[#8E8E8E] placeholder:pl-2 py-7"
-                                placeholder="Enter 11-digit number"
+                                placeholder="Enter 10-digit number"
                               />
                             </Box>
                           </FormControl>

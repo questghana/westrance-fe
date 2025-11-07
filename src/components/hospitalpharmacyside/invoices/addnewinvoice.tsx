@@ -20,11 +20,9 @@ import { axios } from '@/configs/axios.config'
 import { useAuthStore } from '@/store/userInfo.store'
 
 const Benefits = [
-  "OPD Access",
-  "In-Patient Coverage",
-  "Medicines Allowance",
-  "Diagnostic Tests",
-  "Dental & Vision Care",
+  "In-Patient",
+  "Out-Patient",
+  "Virtual Primary Care",
 ];
 
 

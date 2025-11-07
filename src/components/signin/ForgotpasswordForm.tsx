@@ -13,9 +13,10 @@ import { Card, CardContent, CardHeader } from "../ui/card";
 import { Link, useNavigate } from "react-router";
 // import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
-import axios from "axios";
+// import axios from "axios";
 import { useState } from "react";
 import { Loader } from "lucide-react";
+import { axios } from "@/configs/axios.config";
 
 const ForgotpasswordSchema = z.object({
   Email: z.string().min(1, 'Email is required').email('Invalid email address'),
@@ -37,7 +38,7 @@ export const ForgotpasswordForm = () => {
   const onForgotEmailSubmit: SubmitHandler<ForgotpasswordForm> = async (data) => {
     Isloading(true)
     try {
-      const response = await axios.post("http://localhost:4001/api/forgotpassword", {
+      const response = await axios.post("/forgotpassword", {
         email: data.Email
       })
       console.log(response.data)

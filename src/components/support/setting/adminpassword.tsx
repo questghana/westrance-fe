@@ -27,7 +27,7 @@ const passwordSecuritySchema = z.object({
 type PasswordSecurityForm = z.infer<typeof passwordSecuritySchema>
 
 const AdminPasswordsecurity: React.FC = () => {
-    const [filename, setFilename] = useState('Upload Profile Image')
+    const [filename, setFilename] = useState('Upload Company Logo')
     const [previewUrl, setPreviewUrl] = useState<string | null>(null)
     const [togglepass, setTogglepass] = useState(false)
     const [loading, setLoading] = useState(false)
@@ -101,7 +101,6 @@ const AdminPasswordsecurity: React.FC = () => {
             const response = await axios.put("/admin/update-adminDetail", payload)
             toast.success(response.data.message || "Admin updated successfully!")
 
-            // ✅ Optimistic store update
             setAdmin({
                 id: admin?.id || "",
                 email: data.email,
@@ -126,7 +125,7 @@ const AdminPasswordsecurity: React.FC = () => {
             const objectUrl = URL.createObjectURL(file)
             setPreviewUrl(objectUrl)
         } else {
-            setFilename('Upload Profile Image')
+            setFilename('Upload Company Logo')
             setPreviewUrl(null)
         }
     }

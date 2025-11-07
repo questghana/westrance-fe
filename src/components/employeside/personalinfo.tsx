@@ -3,7 +3,6 @@ import { Box } from "../ui/box";
 import { Input } from "../ui/input";
 import { IoCopyOutline } from "react-icons/io5";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import PhoneInput from "react-phone-number-input";
 // import "react-phone-input-2/lib/style.css";
 import "react-phone-number-input/style.css";
 import { Flex } from "../ui/flex";
@@ -12,14 +11,32 @@ import { useAuthStore } from "@/store/userInfo.store";
 
 
 const Personalinfo: React.FC = () => {
-  const [phone, setPhone] = useState<string>("");
   const [isCopied, setIsCopied] = useState(false);
   const [copytxt, setCopytxt] = useState("");
   const { employee, newEmployeeId } = useAuthStore()
-  const registerationNumber = employee?.registrationNumber.slice(4, 16)
+  const [countryCode, setCountryCode] = useState<string>(""); 
+  const [localPhoneNumber, setLocalPhoneNumber] = useState<string>("");
+
   useEffect(() => {
     if (employee?.registrationNumber) {
-      setPhone(employee.registrationNumber.slice(0, 4));
+      const raw = employee.registrationNumber;
+      const codeMatch = raw.match(/^\+\d{1,5}/);
+      let code = "";
+      let local = "";
+      if (codeMatch) {
+        code = codeMatch[0];
+        const restDigits = raw.slice(codeMatch[0].length).replace(/\D/g, "");
+        local = restDigits.slice(0, 10);
+      } else {
+        const digitsOnly = raw.replace(/\D/g, "");
+        if (digitsOnly.length >= 10) {
+          local = digitsOnly.slice(-10);
+        } else {
+          local = digitsOnly;
+        }
+      }
+      setCountryCode(code);
+      setLocalPhoneNumber(local);
     }
     if (newEmployeeId) {
       setCopytxt(newEmployeeId);
@@ -78,26 +95,22 @@ const Personalinfo: React.FC = () => {
         <Box className="flex flex-col gap-2">
           <Box>
             <label className="text-sm font-medium">Email Address:</label>
-            <Input className="lg:w-90 py-6 bg-[#F8F8F8]" value={employee?.emailAddress} />
+            <Input className="lg:w-90 py-6 bg-[#F8F8F8]" value={employee?.emailAddress} readOnly />
           </Box>
           <Box>
             <label className="text-sm font-medium">
-              Company Registration Number:
+              Phone Number:
             </label>
             <Box className="flex flex-col lg:flex-row items-center gap-2 w-[100%]">
-              <Box className="bg-[#F4F4F4] text-[#222] py-3 px-3 rounded-md text-sm relative border border-[#DCDEE2]">
-                <PhoneInput
-                  international
-                  defaultCountry="PK"
-                  countryCallingCodeEditable={false}
-                  value={phone}
-                  onChange={(value) => setPhone(value || "")}
-                  className="custom-phone-input lg:w-18 md:w-65 py-1.5"
-                />
-              </Box>
+              <Input
+                value={countryCode}
+                readOnly
+                className="bg-[#F4F4F4] text-[#222] py-7 px-3 rounded-md text-sm border border-[#DCDEE2] w-24"
+                placeholder="+233"
+              />
               <Input
                 className="appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none lg:w-70 md:w-70  bg-[#F8F8F8] placeholder:text-[#8E8E8E] placeholder:pl-2 py-7"
-                value={registerationNumber}
+                value={localPhoneNumber}
                 readOnly
               />
             </Box>

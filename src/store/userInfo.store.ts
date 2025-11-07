@@ -105,7 +105,7 @@ export const useAuthStore = create<AuthStore>()(
           token,
           user,
           role: user.role,
-          employee: employee ?? null,
+          employee: employee ? { ...employee, profileImage: employee.profileImage || user.image } : null,
           company: company ?? null,
           isAuthenticated: true,
         });

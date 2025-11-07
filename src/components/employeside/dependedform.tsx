@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import PhoneInput from "react-phone-number-input";
+// import PhoneInput from "react-phone-number-input";
 import "react-phone-input-2/lib/style.css";
 import "react-phone-number-input/style.css";
 import { Flex } from "../ui/flex";
@@ -33,7 +33,10 @@ const dependedschema = z.object({
   LastName: z.string().min(1, "Last Name is required"),
   EmailAddress: z.string().optional(),
   Relation: z.string().min(1, "Relation is required"),
-  PhoneNumber: z.string().optional(),
+  PhoneNumber: z
+    .string()
+    .regex(/^\+\d{1,5}\s\d{10}$/, "Use format +<code> <10-digit number> e.g. +233 0123456789")
+    .optional(),
   profilePhoto: z.union([z.instanceof(File), z.string()]).optional(),
 });
 
@@ -42,7 +45,7 @@ type dependedform = z.infer<typeof dependedschema>;
 const DependedForm: React.FC<{ index: number; totalForms: number; onAdd: () => void; onRemove: () => void; canAdd: boolean }> = ({ index, totalForms, onAdd, onRemove, canAdd }) => {
   const [filename, setFilename] = useState("Choose Profile Photo");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [value, setValue] = useState<string | undefined>("");
+  const [countryCode, setCountryCode] = useState<string>(""); // Initialize countryCode
   const [loading, setLoading] = useState(false)
   const { employee, role } = useAuthStore()
   const employeeId = employee?.employeeId
@@ -56,7 +59,7 @@ const DependedForm: React.FC<{ index: number; totalForms: number; onAdd: () => v
       Relation: '',
       PhoneNumber: '',
       profilePhoto: '',
-    },
+    }
   });
 
   const { control, handleSubmit, formState: { isSubmitting } } = form;
@@ -270,20 +273,35 @@ const DependedForm: React.FC<{ index: number; totalForms: number; onAdd: () => v
                         Phone Number:
                       </FormLabel>
                       <Box className="flex flex-col lg:flex-row items-center gap-4 w-[100%]">
-                        <Box className="bg-[#F4F4F4] text-[#222] py-3 px-3 rounded-md text-sm relative border border-[#DCDEE2]">
-                          <PhoneInput
-                            country="ru"
-                            international
-                            countryCallingCodeEditable={false}
-                            defaultCountry="GH"
-                            value={value}
-                            onChange={setValue}
-                            className="custom-phone-input lg:w-18 md:w-90 py-1.5"
+                        <Input
+                          value={countryCode}
+                          onChange={(e) => {
+                            const next = e.target.value
+                              .replace(/[^+0-9]/g, '')
+                              .replace(/(?!^)[+]/g, '')
+                              .slice(0, 5);
+                            setCountryCode(next);
+                            const local = (form.getValues('PhoneNumber')?.split(' ')[1] || '');
+                            form.setValue('PhoneNumber', `${next} ${local}`.trim(), { shouldValidate: true, shouldDirty: true });
+                          }}
+                          className="bg-[#F4F4F4] text-[#222] py-7 px-3 rounded-md text-sm border border-[#DCDEE2] w-24"
+                          placeholder="+233"
+                        />
+                        <Input
+                          value={(field.value?.split(' ')[1] || '').replace(/\D/g, '').slice(0, 10)}
+                          onChange={(e) => {
+                            const local = e.target.value.replace(/\D/g, '').slice(0, 10);
+                            form.setValue('PhoneNumber', `${countryCode} ${local}`.trim(), { shouldValidate: true, shouldDirty: true });
+                          }}
+                          inputMode="numeric"
+                          pattern="\d{10}"
+                          maxLength={10}
+                          className="lg:w-70 py-7 bg-[#F8F8F8]" 
+                          placeholder="Enter Phone Number" 
                           />
-                        </Box>
-                        <Input {...field} className="lg:w-70 py-7 bg-[#F8F8F8]" placeholder="Enter Phone Number" />
                       </Box>
                     </Box>
+                    <FormMessage />
                   </FormItem>
                 )}
               />

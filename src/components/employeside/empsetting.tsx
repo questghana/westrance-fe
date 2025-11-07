@@ -30,7 +30,7 @@ type updateuserForm = z.infer<typeof updateuserschema>
 
 
 const Empsetting: React.FC = () => {
-    const [filename, setFilename] = useState('Upload Company Logo')
+    const [filename, setFilename] = useState('Upload Profile Image')
     const [previewUrl, setPreviewUrl] = useState<string | null>(null)
     const [togglecreatepass, setTogglecreatepass] = useState(false)
     const [togglepass, setTogglepass] = useState(false)
@@ -45,7 +45,7 @@ const Empsetting: React.FC = () => {
             CurrentPassword: '',
             NewPassword: '',
             CPassword: '',
-            profilePhoto: undefined,
+            profilePhoto: '',
         },
     })
 
@@ -79,6 +79,7 @@ const Empsetting: React.FC = () => {
             }
             const response = await axios.put("/employee/update", payload);
             toast.success(response.data.message)
+            console.log(response.data, "response")
             useAuthStore.setState((prev) => ({
                 employee: {
                     ...prev.employee!,
@@ -88,7 +89,7 @@ const Empsetting: React.FC = () => {
                     profileImage: response.data?.updatedProfileImage || prev.employee?.profileImage,
                 }
             }));
-
+            console.log(employee, "employee")
         } catch (error: any) {
             toast.error(error.response?.data?.error || "Something went wrong")
         } finally {
@@ -104,7 +105,7 @@ const Empsetting: React.FC = () => {
             const objectUrl = URL.createObjectURL(file)
             setPreviewUrl(objectUrl)
         } else {
-            setFilename('Upload Company Logo')
+            setFilename('Upload Profile Image')
             setPreviewUrl(null)
         }
     }
