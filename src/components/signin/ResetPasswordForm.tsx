@@ -11,9 +11,9 @@ import Signinimg from "/homeimg/Signin.png";
 import Logo from "/Logo/logo.png";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { Link, useSearchParams } from "react-router";
-import axios from "axios";
 import { Loader } from "lucide-react";
 import { toast } from "sonner";
+import { axios } from "@/configs/axios.config";
 
 const resetPasswordSchema = z.object({
     Newpassword: z.string().min(8, "Password must be at least 8 characters"),
@@ -42,12 +42,12 @@ export const ResetPasswordForm = () => {
     const onResetPasswordSubmit: SubmitHandler<ResetPasswordForm> = async (data) => {
         Isloading(true)
         try {
-            const response = await axios.put("http://localhost:4001/api/resetpassword", {
+            const response = await axios.put("/resetpassword", {
                 token,
                 Newpassword: data.Newpassword,
                 confirmpassword: data.confirmpassword
             })
-            console.log(response.data)
+            // console.log(response.data)
             toast.success(response.data.message);
         } catch (error: any) {
             console.log(error)
