@@ -41,7 +41,7 @@ export const ForgotpasswordForm = () => {
       const response = await axios.post("/forgotpassword", {
         email: data.Email
       })
-      console.log(response.data)
+      // console.log(response.data)
       toast.success(response.data.message);
     } catch (error:any) {
       console.log(error)
