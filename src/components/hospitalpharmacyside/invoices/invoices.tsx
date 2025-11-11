@@ -279,7 +279,7 @@ const Hospitalinvoices: React.FC<InvoiceHeaderProps> = ({ goToStep }) => {
                             enableHospitalColumnVisibility={false}
                             enableEmployeeColumnVisibility={true}
                             enableCompanyEmpManagement={false}
-                            enableCompanyColumnVisibility={true}
+                            enableCompanyColumnVisibility={false}
                             enableReportAnalyticsVisibility={true}
                             enableInvoiceActiveVisibility={false}
                             searchInput={false}

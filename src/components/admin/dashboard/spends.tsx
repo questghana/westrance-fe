@@ -14,7 +14,6 @@ const Spends: FC<BoxProps> = ({ className, ...props }) => {
     try {
       const response = await axios.get(`/admin/top-company-spend?limit=${limit}`)
       setTopCompanies(response.data.topCompanies)
-      console.log(response.data.topCompanies)
     } catch (error: any) {
       toast.error(error?.response?.data?.error || "Something went wrong")
     }

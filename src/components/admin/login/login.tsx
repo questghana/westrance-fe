@@ -41,7 +41,6 @@ const DashboardLogin: React.FC = () => {
     const onSubmit: SubmitHandler<adminloginForm> = async (data) => {
         try {
             const response = await axios.post("/admin/admin-login", data)
-            // console.log(response);
             setAdmin(response.data.admin)
             toast.success(response.data.message)
             navigate("/dashboard")

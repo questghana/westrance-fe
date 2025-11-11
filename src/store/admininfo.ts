@@ -17,6 +17,7 @@ interface AdminState {
   setLoading: (value: boolean) => void;
 }
 
+// REMOVE persist middleware  here we are not using any persistance
 export const useAdminStore = create<AdminState>()(
   persist(
     (set) => ({

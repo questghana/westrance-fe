@@ -79,13 +79,13 @@ interface AuthStore {
   clearAuth: () => void;
   checkAuth: () => Promise<void>;
 }
-
+// REMOVE persist middleware  here we are not using any persistance
 export const useAuthStore = create<AuthStore>()(
   persist(
     (set) => ({
       loading: false,
       isAuthenticated: false,
-      token: null, // Initialize token as null
+      token: null,
       user: null,
       role: null,
       employee: null,
@@ -94,7 +94,6 @@ export const useAuthStore = create<AuthStore>()(
       newEmployeeId: null,
       employeecount: 0,
       dependentcount: 0,
-
       setnewEmployeeId: (id) => set({ newEmployeeId: id }),
       setDependentCount: (count) => set({ dependentcount: count }),
       setEmployeeCount: (count) => set({ employeecount: count }),
@@ -175,7 +174,7 @@ export const useAuthStore = create<AuthStore>()(
         try {
           const token = document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1];
           const res = await axios.get("/me");
-          const { user, company, employee } = res.data.data; // Adjust based on backend response structure
+          const { user, company, employee } = res.data.data;
           set({
             isAuthenticated: true,
             user: user || null,
@@ -185,8 +184,8 @@ export const useAuthStore = create<AuthStore>()(
             token: token || null,
           });
         } catch (err) {
-          console.error("checkAuth failed:", err);
-          console.log("checkAuth failed - setting isAuthenticated to false, role to null.", err);
+          // console.error("checkAuth failed:", err);
+          // console.log("checkAuth failed - setting isAuthenticated to false, role to null.", err);
           set({
             isAuthenticated: false,
             token: null,
@@ -204,7 +203,7 @@ export const useAuthStore = create<AuthStore>()(
       },
     }),
     {
-      name: "auth-store",
+      name: "auth-storage",
     }
   )
 );

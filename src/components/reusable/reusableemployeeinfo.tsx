@@ -21,8 +21,20 @@ type ReusableEmployeeInforProps = {
 };
 
 export const ReusableEmployeeInfor: FC<ReusableEmployeeInforProps> = ({ headingshow }) => {
-  const { dependents, selectedEmployee } = useViewEmployeeStore()
+  const { dependents, selectedEmployee, setSelectedEmployee, setDependents } = useViewEmployeeStore()
   const { employee } = useCompanyStore()
+
+  const handleImageError = (type: 'employee' | 'dependent', id?: string) => {
+    if (type === 'employee' && selectedEmployee) {
+      setSelectedEmployee({ ...selectedEmployee, profileImage: null });
+    } else if (type === 'dependent' && id) {
+      const updatedDependents = dependents.map(dep =>
+        (dep as any).id === id ? { ...dep, profileImage: null } : dep
+      );
+      setDependents(updatedDependents);
+    }
+  };
+
   return (
     <Box className="bg-white rounded-xl w-full">
       {headingshow && <Center className="gap-2 items-center text-center mt-8">
@@ -87,6 +99,7 @@ export const ReusableEmployeeInfor: FC<ReusableEmployeeInforProps> = ({ headings
               src={selectedEmployee?.profileImage || employee?.profileImage}
               className="rounded-md"
               alt="profileImage"
+              onError={() => handleImageError('employee')}
             />
           ) : (
             <div className="w-[160px] h-[160px] flex items-center justify-center rounded-md bg-gray-200 text-gray-600">
@@ -163,6 +176,7 @@ export const ReusableEmployeeInfor: FC<ReusableEmployeeInforProps> = ({ headings
                         src={dependent.profileImage}
                         className="rounded-md object-cover"
                         alt="profileImage"
+                        onError={() => handleImageError('dependent', (dependent as any).id)}
                       />
                     ) : (
                       <div className="w-[160px] h-[160px] flex items-center justify-center rounded-md bg-gray-200 text-gray-600">
