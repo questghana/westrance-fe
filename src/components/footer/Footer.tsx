@@ -62,7 +62,7 @@ const Footer: React.FC<FooterProps> = ({prop}) => {
         </Box>
         <Flex className="items-center gap-2">
           <IoCallOutline size={20} className="flex-shrink-0"/>
-          <p className="text-white font-light text-sm">855-987-6543</p>
+          <p className="text-white font-light text-sm">0536566999</p>
         </Flex>
         <p className="text-white font-light text-sm leading-relaxed">
           We're here to support you — in your <br /> preferred language.
