@@ -68,6 +68,14 @@ export type Data = {
     id: string;
     EmployeeId: string;
     PatientName: string;
+    HospitalName: string;
+    inPatientInvoiceAmount?: string;
+    outPatientInvoiceAmount?: string;
+    inPatientRemainingBalance?: string;
+    outPatientRemainingBalance?: string;
+    BenefitUsed: string;
+    benefitTypeUsed: string;
+    SubmittedDate: string;
 };
 
 
@@ -160,9 +168,12 @@ export const columns = (): ColumnDef<Data>[] => [
                             { label: "Employee ID", key: "EmployeeId" },
                             { label: "Patient Name", key: "PatientName" },
                             { label: "Hospital", key: "HospitalName" },
-                            { label: "Amount", key: "Amount" },
+                            { label: "In-Patient Invoice Amount", key: "inPatientInvoiceAmount" },
+                            { label: "Out-Patient Invoice Amount", key: "outPatientInvoiceAmount" },
+                            { label: "In-Patient Remaining Balance", key: "inPatientRemainingBalance" },
+                            { label: "Out-Patient Remaining Balance", key: "outPatientRemainingBalance" },
                             { label: "Benefit Used", key: "BenefitUsed" },
-                            { label: "Remaining Balance", key: "RemainingBalance" },
+                            { label: "Benefit Type Used", key: "benefitTypeUsed" },
                             { label: "Submitted Date", key: "SubmittedDate" },
                         ]}
                         fileName={`invoice_${row.original.id}.pdf`}
@@ -180,7 +191,7 @@ const Hospitalinvtable: React.FC = () => {
         try {
             setLoading(true)
             const response = await axios.get("/hospital/getinvoice");
-            setData(response.data.invoices);    
+            setData(response.data.invoices);
         } catch (error: any) {
             toast.error(error.response.data.message || "Error fetching invoices");
         } finally {

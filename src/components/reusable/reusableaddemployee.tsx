@@ -53,9 +53,11 @@ const addEmployeeSchema = z
       .string()
       .regex(/^\+\d{1,5}\s\d{10}$/, "Use format +<code> <10-digit number> e.g. +233 0123456789"),
     startingDate: z.date({ required_error: "Starting date is required" }),
-    duration: z.string().min(1, "Please select a duration"),
-    amount: z.string().min(1, "Amount is required"),
-    benefits: z.string().min(1, "Please select benefits"),
+    duration: z.string().min(1, "Please select a duration"),  
+    inPatientBenefit: z.string().optional(),
+    inPatientAmount: z.string().optional(),
+    outPatientBenefit: z.string().optional(),
+    outPatientAmount: z.string().optional(),
     password: z.string().min(8, "Password must be at least 8 characters"),
     confirmPassword: z.string().min(8, "Confirm password must be at least 8 characters"),
     dependents: z.number().min(0).max(3).optional().default(0),
@@ -95,20 +97,16 @@ export const ReusableAddEmployee = ({ onGoToList }: ReusableAddEmployeeProps) =>
       companyContact: "",
       startingDate: undefined,
       duration: "",
-      amount: "",
-      benefits: "",
+      inPatientBenefit: "",
+      inPatientAmount: "",
+      outPatientBenefit: "",
+      outPatientAmount: "",
       password: "",
       confirmPassword: "",
       dependents: 0,
       profilePhoto: '',
     },
   });
-
-  const Benefits = [
-    "In-Patient",
-    "Out-Patient",
-    "Virtual Primary Care",
-  ];
 
   const HandlefileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -143,12 +141,24 @@ export const ReusableAddEmployee = ({ onGoToList }: ReusableAddEmployeeProps) =>
       if (mode === "add") {
         const fileInput = document.getElementById('fileinp') as HTMLInputElement;
         const file = fileInput?.files?.[0];
-        let payload = { ...data };
+
+        const benefitsArray: string[] = [];
+        if (data.inPatientBenefit) {
+          benefitsArray.push(data.inPatientBenefit);
+        }
+        if (data.outPatientBenefit) {
+          benefitsArray.push(data.outPatientBenefit);
+        }
+
+        let payload: any = {
+          ...data,
+          benefits: benefitsArray,
+        };
+
         if (file) {
           const base64Image = await convertToBase64(file);
           payload = {
-            ...data,
-            employeeId: selectedEmployee?.employeeId,
+            ...payload,
             profilePhoto: base64Image,
           };
         }
@@ -165,12 +175,25 @@ export const ReusableAddEmployee = ({ onGoToList }: ReusableAddEmployeeProps) =>
       else if (mode === "edit" && selectedEmployee?.employeeId) {
         const fileInput = document.getElementById('fileinp') as HTMLInputElement;
         const file = fileInput?.files?.[0];
-        let payload = { ...data };
+
+        const benefitsArray: string[] = [];
+        if (data.inPatientBenefit) {
+          benefitsArray.push(data.inPatientBenefit);
+        }
+        if (data.outPatientBenefit) {
+          benefitsArray.push(data.outPatientBenefit);
+        }
+
+        let payload: any = {
+          ...data,
+          employeeId: selectedEmployee?.employeeId,
+          benefits: benefitsArray,
+        };
+
         if (file) {
           const base64Image = await convertToBase64(file);
           payload = {
-            ...data,
-            employeeId: selectedEmployee?.employeeId,
+            ...payload,
             profilePhoto: base64Image,
           };
         }
@@ -217,8 +240,10 @@ export const ReusableAddEmployee = ({ onGoToList }: ReusableAddEmployeeProps) =>
         companyContact: `${code} ${local}`.trim(),
         startingDate: new Date(selectedEmployee.startingDate),
         duration: selectedEmployee.duration,
-        amount: selectedEmployee.amountPackage,
-        benefits: selectedEmployee.benefits,
+        inPatientBenefit: selectedEmployee.inPatientBenefit || "",
+        inPatientAmount: selectedEmployee.inPatientAmount || "",
+        outPatientBenefit: selectedEmployee.outPatientBenefit || "",
+        outPatientAmount: selectedEmployee.outPatientAmount || "",
         dependents: Number(selectedEmployee.dependents),
         password: "",
         confirmPassword: "",
@@ -492,13 +517,33 @@ export const ReusableAddEmployee = ({ onGoToList }: ReusableAddEmployeeProps) =>
           <Flex className="flex-col lg:flex-row pt-4 gap-6">
             <FormField
               control={form.control}
-              name="amount"
+              name="inPatientBenefit"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>
-                    Amount (GHS) Package:{" "}
-                    <span className="text-red-500">*</span>
-                  </FormLabel>
+                  <FormLabel>In-Patient Benefit</FormLabel>
+                  <FormControl>
+                    <Select key={field.value} onValueChange={field.onChange} value={field.value || ""}>
+                      <SelectTrigger className="md:w-96 lg:w-[390px] w-60 py-7 bg-[#F8F8F8] custom-placeholder">
+                        <SelectValue placeholder="Select In-Patient Benefit" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel>Select In-Patient Benefit</SelectLabel>
+                          <SelectItem value="In-Patient">In-Patient</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="inPatientAmount"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>In-Patient Amount (GHS)</FormLabel>
                   <FormControl>
                     <Input
                       className="lg:w-72 md:w-96 py-7 bg-[#F8F8F8] placeholder:font-bold"
@@ -510,30 +555,44 @@ export const ReusableAddEmployee = ({ onGoToList }: ReusableAddEmployeeProps) =>
                 </FormItem>
               )}
             />
+          </Flex>
+
+          <Flex className="flex-col lg:flex-row pt-4 gap-6">
             <FormField
               control={form.control}
-              name="benefits"
+              name="outPatientBenefit"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>
-                    Benefits: <span className="text-red-500">*</span>
-                  </FormLabel>
+                  <FormLabel>Out-Patient Benefit</FormLabel>
                   <FormControl>
-                    <Select key={field.value} onValueChange={field.onChange} value={field.value}>
+                    <Select key={field.value} onValueChange={field.onChange} value={field.value || ""}>
                       <SelectTrigger className="md:w-96 lg:w-[390px] w-60 py-7 bg-[#F8F8F8] custom-placeholder">
-                        <SelectValue placeholder="Select Benefits" />
+                        <SelectValue placeholder="Select Out-Patient Benefit" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
-                          <SelectLabel>Select Benefits</SelectLabel>
-                          {
-                            Benefits.map((item, index) => (
-                              <SelectItem key={index} value={item}>{item}</SelectItem>
-                            ))
-                          }
+                          <SelectLabel>Select Out-Patient Benefit</SelectLabel>
+                          <SelectItem value="Out-Patient">Out-Patient</SelectItem>
                         </SelectGroup>
                       </SelectContent>
                     </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="outPatientAmount"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Out-Patient Amount (GHS)</FormLabel>
+                  <FormControl>
+                    <Input
+                      className="lg:w-72 md:w-96 py-7 bg-[#F8F8F8] placeholder:font-bold"
+                      placeholder="₵ 0.00"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

@@ -130,6 +130,7 @@ export type Data = {
   employeeAmountPackage: string | null;
   hospitalEmployeeAmountPackage: string | null;
   BenefitUsed: string;
+  benefitTypeUsed: string;
   SubmittedDate: string;
 };
 
@@ -265,9 +266,12 @@ export const columns = (): ColumnDef<Data>[] => [
             { label: "Employee ID", key: "EmployeeId" },
             { label: "Patient Name", key: "PatientName" },
             { label: "Hospital", key: "HospitalName" },
-            { label: "Amount", key: "Amount" },
+            { label: "In-Patient Invoice Amount", key: "inPatientInvoiceAmount" },
+            { label: "Out-Patient Invoice Amount", key: "outPatientInvoiceAmount" },
+            { label: "In-Patient Remaining Balance", key: "inPatientRemainingBalance" },
+            { label: "Out-Patient Remaining Balance", key: "outPatientRemainingBalance" },
             { label: "Benefit Used", key: "BenefitUsed" },
-            { label: "Remaining Balance", key: "RemainingBalance" },
+            { label: "Benefit Type Used", key: "benefitTypeUsed" },
             { label: "Submitted Date", key: "SubmittedDate" },
           ]}
           fileName={`invoice_${row.original.id}.pdf`}
@@ -285,7 +289,7 @@ const Reportsanalytics: React.FC<{ className?: string }> = ({ className }) => {
   const [totalPages, setTotalPages] = useState(1);
   const { loading, setLoading } = useAuthStore()
   const limit = 10
-  
+
   const getStatistics = async () => {
     try {
       setStatsLoading(true)
@@ -300,7 +304,7 @@ const Reportsanalytics: React.FC<{ className?: string }> = ({ className }) => {
 
   const getInvoice = async (page: number) => {
     try {
-      setLoading(true)  
+      setLoading(true)
       const response = await axios.get(`/admin/report-analytics?page=${page}&limit=${limit}`)
       setData(response.data.invoices)
       setTotalPages(response.data.totalPages);
@@ -478,23 +482,23 @@ const Reportsanalytics: React.FC<{ className?: string }> = ({ className }) => {
             />
           )
         }
-      <Pagination className="flex justify-end mt-2">
-        <PaginationContent>   
-          <PaginationItem>
-            <PaginationPrevious onClick={handlePreviousPage} size="default" />
-          </PaginationItem>
-          {[...Array(totalPages)].map((_, index) => (
-            <PaginationItem key={index}>
-              <PaginationLink onClick={() => setCurrentPage(index + 1)} isActive={index + 1 === currentPage} size="default">
-                {index + 1}
-              </PaginationLink>
+        <Pagination className="flex justify-end mt-2">
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious onClick={handlePreviousPage} size="default" />
             </PaginationItem>
-          ))}
-          <PaginationItem>
-            <PaginationNext onClick={handleNextPage} size="default" />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+            {[...Array(totalPages)].map((_, index) => (
+              <PaginationItem key={index}>
+                <PaginationLink onClick={() => setCurrentPage(index + 1)} isActive={index + 1 === currentPage} size="default">
+                  {index + 1}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+            <PaginationItem>
+              <PaginationNext onClick={handleNextPage} size="default" />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
       </ComponentWrapper>
     </Stack>
   );

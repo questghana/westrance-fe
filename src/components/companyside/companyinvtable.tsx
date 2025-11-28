@@ -61,9 +61,19 @@ import { Loader } from 'lucide-react'
 // ];
 
 export type Data = {
-    id: string;
+    id: string
     EmployeeId: string;
-    PatientName: string;    
+    PatientName: string;
+    BenefitUsed: string;
+    Amount: string;
+    HospitalName: string;
+    RemainingBalance: string;
+    SubmittedDate: string;
+    inPatientInvoiceAmount: string;
+    outPatientInvoiceAmount: string;
+    inPatientRemainingBalance: string;
+    outPatientRemainingBalance: string;
+    benefitTypeUsed: string;
 };
 
 export const columns = (): ColumnDef<Data>[] => [
@@ -155,9 +165,12 @@ export const columns = (): ColumnDef<Data>[] => [
                             { label: "Employee ID", key: "EmployeeId" },
                             { label: "Patient Name", key: "PatientName" },
                             { label: "Hospital", key: "HospitalName" },
-                            { label: "Amount", key: "Amount" },
+                            { label: "In-Patient Invoice Amount", key: "inPatientInvoiceAmount" },
+                            { label: "Out-Patient Invoice Amount", key: "outPatientInvoiceAmount" },
+                            { label: "In-Patient Remaining Balance", key: "inPatientRemainingBalance" },
+                            { label: "Out-Patient Remaining Balance", key: "outPatientRemainingBalance" },
                             { label: "Benefit Used", key: "BenefitUsed" },
-                            { label: "Remaining Balance", key: "RemainingBalance" },
+                            { label: "Benefit Type Used", key: "benefitTypeUsed" },
                             { label: "Submitted Date", key: "SubmittedDate" },
                         ]}
                         fileName={`invoice_${row.original.id}.pdf`}

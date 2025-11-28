@@ -25,11 +25,15 @@ export const EmployeeInformation = () => {
     },
     {
       name: "Benefits:",
-      detail: selectedEmployee.benefits,
+      detail: selectedEmployee.benefits.join(", "),
     },
     {
-      name: "amount package:",
-      detail: selectedEmployee.amountPackage,
+      name: "In-Patient Amount:",
+      detail: selectedEmployee.inPatientAmount,
+    },
+    {
+      name: "Out-Patient Amount:",
+      detail: selectedEmployee.outPatientAmount,
     },
     {
       name: "Number of Dependents:",

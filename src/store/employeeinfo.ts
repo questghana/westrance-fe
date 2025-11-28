@@ -8,9 +8,12 @@ export type Employee = {
     lastName: string;
     emailAddress: string;
     registrationNumber: string;
-    benefits: string;
-    amountPackage: string;
-    dependents: string;
+    dependents?: number;
+    inPatientBenefit?: string;
+    inPatientAmount?: string;
+    outPatientBenefit?: string;
+    outPatientAmount?: string;
+    benefits: string[];
     startingDate: string;
     duration: string;
     profileImage: string | null;

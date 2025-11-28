@@ -38,7 +38,8 @@ const HospitalEmployeeSchema = z
       .regex(/^\+\d{1,5}\s\d{10}$/, "Use format +<code> <10-digit number> e.g. +233 0123456789"),
     startingDate: z.date({ required_error: "Starting date is required" }),
     duration: z.string().min(1, "Please select a duration"),
-    amount: z.string().min(1, "Amount is required"),
+    inPatientAmount: z.string().optional(),
+    outPatientAmount: z.string().optional(),
     benefits: z.string().min(1, "Please select benefits"),
     password: z.string().min(8, "Password must be at least 8 characters"),
     confirmPassword: z.string().min(8, "Confirm password must be at least 8 characters"),
@@ -80,7 +81,8 @@ const Hospitalemployee = ({ goToStep }: Props) => {
       companyContact: "",
       startingDate: undefined,
       duration: "",
-      amount: "",
+      inPatientAmount: "",
+      outPatientAmount: "",
       benefits: "",
       password: "",
       confirmPassword: "",
@@ -146,8 +148,9 @@ const Hospitalemployee = ({ goToStep }: Props) => {
         companyContact: `${code} ${local}`.trim(),
         startingDate: new Date(selectedEmployee.startingDate),
         duration: selectedEmployee.duration,
-        amount: selectedEmployee.amountPackage,
-        benefits: selectedEmployee.benefits,
+        inPatientAmount: selectedEmployee.inPatientAmount || "",
+        outPatientAmount: selectedEmployee.outPatientAmount || "",
+        benefits: selectedEmployee.benefits?.join(", ") || "",
         dependents: Number(selectedEmployee.dependents),
         password: "",
         confirmPassword: "",
@@ -461,11 +464,31 @@ const Hospitalemployee = ({ goToStep }: Props) => {
           <Flex className="flex-col lg:flex-row pt-4 gap-6">
             <FormField
               control={form.control}
-              name="amount"
+              name="inPatientAmount"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    Amount (GHS) Package:{" "}
+                    In-Patient Amount (GHS):{" "}
+                    <span className="text-red-500">*</span>
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      className="lg:w-72 md:w-96 py-7 bg-[#F8F8F8] placeholder:font-bold"
+                      placeholder="₵ 0.00"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="outPatientAmount"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    Out-Patient Amount (GHS):{" "}
                     <span className="text-red-500">*</span>
                   </FormLabel>
                   <FormControl>
@@ -488,7 +511,10 @@ const Hospitalemployee = ({ goToStep }: Props) => {
                     Benefits: <span className="text-red-500">*</span>
                   </FormLabel>
                   <FormControl>
-                    <Select key={field.value} onValueChange={field.onChange} value={field.value}>
+                    <Select
+                      onValueChange={field.onChange}
+                      value={field.value}
+                    >
                       <SelectTrigger className="md:w-96 lg:w-[390px] w-60 py-7 bg-[#F8F8F8] custom-placeholder">
                         <SelectValue placeholder="Select Benefits" />
                       </SelectTrigger>

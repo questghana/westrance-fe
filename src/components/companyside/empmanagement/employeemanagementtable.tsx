@@ -344,7 +344,7 @@ export const columns = (
                 <DropdownMenuCheckboxItem
                   className="p-2 border-b-1 border-gray-200 rounded-none cursor-pointer"
                   onClick={async () => {
-                    useViewEmployeeStore.getState().setSelectedEmployee(employee as Employee);
+                    useViewEmployeeStore.getState().setSelectedEmployee(employee as unknown as Employee);
                     useViewEmployeeStore.getState().setMode("edit");
                     goToStep("edit employee")
                   }

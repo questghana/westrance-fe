@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Box } from "../ui/box";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
@@ -35,7 +35,7 @@ const dependedschema = z.object({
   Relation: z.string().min(1, "Relation is required"),
   PhoneNumber: z
     .string()
-    .regex(/^\+\d{1,5}\s\d{10}$/, "Use format +<code> <10-digit number> e.g. +233 0123456789")
+    .refine((val) => val === "" || /^\+\d{1,5}\s\d{10}$/.test(val), "Use format +<code> <10-digit number> e.g. +233 0123456789")
     .optional(),
   profilePhoto: z.union([z.instanceof(File), z.string()]).optional(),
 });
@@ -45,7 +45,7 @@ type dependedform = z.infer<typeof dependedschema>;
 const DependedForm: React.FC<{ index: number; totalForms: number; onAdd: () => void; onRemove: () => void; canAdd: boolean }> = ({ index, totalForms, onAdd, onRemove, canAdd }) => {
   const [filename, setFilename] = useState("Choose Profile Photo");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [countryCode, setCountryCode] = useState<string>(""); // Initialize countryCode
+  const [countryCode, setCountryCode] = useState<string>("+233");
   const [loading, setLoading] = useState(false)
   const { employee, role } = useAuthStore()
   const employeeId = employee?.employeeId
@@ -61,6 +61,18 @@ const DependedForm: React.FC<{ index: number; totalForms: number; onAdd: () => v
       profilePhoto: '',
     }
   });
+
+  useEffect(() => {
+    const phoneNumberValue = form.getValues('PhoneNumber');
+    if (phoneNumberValue && phoneNumberValue.startsWith('+')) {
+      const parts = phoneNumberValue.split(' ');
+      if (parts.length > 0) {
+        setCountryCode(parts[0]);
+      }
+    } else {
+      setCountryCode('+233'); // Default to +233 if no valid phone number is set
+    }
+  }, [form.watch('PhoneNumber')]);
 
   const { control, handleSubmit, formState: { isSubmitting } } = form;
 

@@ -51,12 +51,16 @@ export type Data = {
   EmployeeId: string;
   PatientName: string;
   HospitalName: string;
-  Amount: string;
+  inPatientInvoiceAmount: string;
+  outPatientInvoiceAmount: string;
+  inPatientRemainingBalance: string;
+  outPatientRemainingBalance: string;
   TotalAmount: string;
   RemainingBalance: string;
   employeeAmountPackage: string | null;
   hospitalEmployeeAmountPackage: string | null;
   BenefitUsed: string;
+  benefitTypeUsed: string;
   SubmittedDate: string;
 };
 
@@ -135,7 +139,7 @@ export const columns = (): ColumnDef<Data>[] => [
     ),
     cell: ({ row }) => {
       return (
-        <Box className="ml-2 text-start">{row.original.Amount}</Box>
+        <Box className="ml-2 text-start">{row.original.inPatientInvoiceAmount}</Box>
       );
     },
   },
@@ -192,11 +196,14 @@ export const columns = (): ColumnDef<Data>[] => [
             { label: "Employee ID", key: "EmployeeId" },
             { label: "Patient Name", key: "PatientName" },
             { label: "Hospital", key: "HospitalName" },
-            { label: "Amount", key: "Amount" },
+            { label: "In-Patient Invoice Amount", key: "inPatientInvoiceAmount" },
+            { label: "Out-Patient Invoice Amount", key: "outPatientInvoiceAmount" },
+            { label: "In-Patient Remaining Balance", key: "inPatientRemainingBalance" },
+            { label: "Out-Patient Remaining Balance", key: "outPatientRemainingBalance" },
             { label: "Benefit Used", key: "BenefitUsed" },
-            { label: "Remaining Balance", key: "RemainingBalance" },
+            { label: "Benefit Type Used", key: "benefitTypeUsed" },
             { label: "Submitted Date", key: "SubmittedDate" },
-          ]}
+        ]}
           fileName={`invoice_${row.original.id}.pdf`}
         />
       );

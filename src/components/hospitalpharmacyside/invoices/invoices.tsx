@@ -82,7 +82,12 @@ export type Data = {
     Amount: string;
     HospitalName: string;
     RemainingBalance: string;
-    SubmittedDate: string
+    SubmittedDate: string;
+    inPatientInvoiceAmount: string;
+    outPatientInvoiceAmount: string;
+    inPatientRemainingBalance: string;
+    outPatientRemainingBalance: string;
+    benefitTypeUsed: string;
 };
 
 export const columns = (setInvoicedata: Dispatch<SetStateAction<any[]>>): ColumnDef<Data>[] => [
@@ -201,9 +206,12 @@ export const columns = (setInvoicedata: Dispatch<SetStateAction<any[]>>): Column
                             { label: "Employee ID", key: "EmployeeId" },
                             { label: "Patient Name", key: "PatientName" },
                             { label: "Hospital", key: "HospitalName" },
-                            { label: "Amount", key: "Amount" },
+                            { label: "In-Patient Invoice Amount", key: "inPatientInvoiceAmount" },
+                            { label: "Out-Patient Invoice Amount", key: "outPatientInvoiceAmount" },
+                            { label: "In-Patient Remaining Balance", key: "inPatientRemainingBalance" },
+                            { label: "Out-Patient Remaining Balance", key: "outPatientRemainingBalance" },
                             { label: "Benefit Used", key: "BenefitUsed" },
-                            { label: "Remaining Balance", key: "RemainingBalance" },
+                            { label: "Benefit Type Used", key: "benefitTypeUsed" },
                             { label: "Submitted Date", key: "SubmittedDate" },
                         ]}
                         fileName={`invoice_${row.original.id}.pdf`}
@@ -251,14 +259,14 @@ const Hospitalinvoices: React.FC<InvoiceHeaderProps> = ({ goToStep }) => {
         fetchInvoice(currentPage)
     }, [currentPage])
 
-    const handlePreviousPage = ()=>{
-        if(currentPage > 1){
+    const handlePreviousPage = () => {
+        if (currentPage > 1) {
             setCurrentPage(currentPage - 1)
         }
     }
 
-    const handleNextPage = ()=>{
-        if(currentPage < totalPages){
+    const handleNextPage = () => {
+        if (currentPage < totalPages) {
             setCurrentPage(currentPage + 1)
         }
     }

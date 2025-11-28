@@ -80,7 +80,7 @@ export const ReusableEmployeeInfor: FC<ReusableEmployeeInforProps> = ({ headings
             <Box className="md:gap-18 flex flex-col md:flex-row justify-center md:items-center items-start text-gray-400">
               Amount Package:
               <Box className="capitalize font-medium text-[15px] bg-[#f3f6fe] p-2 rounded-xl text-[#0C2367]">
-                ¢ {selectedEmployee?.amountPackage || employee?.amountPackage}
+                ¢ {selectedEmployee?.inPatientAmount || employee?.inPatientAmount || "N/A"}
               </Box>
             </Box>
             <Box className="md:gap-8 flex flex-col md:flex-row justify-center md:items-center items-start text-gray-400">

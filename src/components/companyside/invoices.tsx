@@ -94,9 +94,12 @@ export type Data = {
     EmployeeId: string;
     PatientName: string;
     BenefitUsed: string;
-    Amount: string;
     HospitalName: string;
-    RemainingBalance: string;
+    inPatientInvoiceAmount: string;
+    outPatientInvoiceAmount: string;
+    inPatientRemainingBalance: string;
+    outPatientRemainingBalance: string;
+    benefitTypeUsed: string;
     SubmittedDate: string
 };
 
@@ -180,10 +183,10 @@ export const columns = (): ColumnDef<Data>[] => [
         },
     },
     {
-        accessorKey: "Amount",
+        accessorKey: "inPatientInvoiceAmount",
         header: () => (
             <Flex className="text-black text-start gap-1">
-                <h1 className="text-[#525252]">Amount (GHS)</h1>
+                <h1 className="text-[#525252]">In-Patient Invoice Amount (GHS)</h1>
                 <Stack className="gap-0 leading-3">
                     <TiArrowSortedUp className="size-3.5 text-[#525252]" />
                     <TiArrowSortedDown className="size-3.5 text-[#525252] -mt-1.5" />
@@ -192,15 +195,15 @@ export const columns = (): ColumnDef<Data>[] => [
         ),
         cell: ({ row }) => {
             return (
-                <Box className=" text-start">{row.original.Amount}</Box>
+                <Box className=" text-start">{row.original.inPatientInvoiceAmount}</Box>
             );
         },
     },
     {
-        accessorKey: "SubmittedDate",
+        accessorKey: "outPatientInvoiceAmount",
         header: () => (
-            <Flex className="text-black text-start gap-1 w-50">
-                <h1 className="text-[#525252]">Payment Date</h1>
+            <Flex className="text-black text-start gap-1">
+                <h1 className="text-[#525252]">Out-Patient Invoice Amount (GHS)</h1>
                 <Stack className="gap-0 leading-3">
                     <TiArrowSortedUp className="size-3.5 text-[#525252]" />
                     <TiArrowSortedDown className="size-3.5 text-[#525252] -mt-1.5" />
@@ -209,7 +212,58 @@ export const columns = (): ColumnDef<Data>[] => [
         ),
         cell: ({ row }) => {
             return (
-                <Box className=" text-start">{new Date(row.original.SubmittedDate).toLocaleDateString()}</Box>
+                <Box className=" text-start">{row.original.outPatientInvoiceAmount}</Box>
+            );
+        },
+    },
+    {
+        accessorKey: "inPatientRemainingBalance",
+        header: () => (
+            <Flex className="text-black text-start gap-1">
+                <h1 className="text-[#525252]">In-Patient Remaining Balance (GHS)</h1>
+                <Stack className="gap-0 leading-3">
+                    <TiArrowSortedUp className="size-3.5 text-[#525252]" />
+                    <TiArrowSortedDown className="size-3.5 text-[#525252] -mt-1.5" />
+                </Stack>
+            </Flex>
+        ),
+        cell: ({ row }) => {
+            return (
+                <Box className=" text-start">{row.original.inPatientRemainingBalance}</Box>
+            );
+        },
+    },
+    {
+        accessorKey: "outPatientRemainingBalance",
+        header: () => (
+            <Flex className="text-black text-start gap-1 w-50">
+                <h1 className="text-[#525252]">Out-Patient Remaining Balance (GHS)</h1>
+                <Stack className="gap-0 leading-3">
+                    <TiArrowSortedUp className="size-3.5 text-[#525252]" />
+                    <TiArrowSortedDown className="size-3.5 text-[#525252] -mt-1.5" />
+                </Stack>
+            </Flex>
+        ),
+        cell: ({ row }) => {
+            return (
+                <Box className=" text-start">{row.original.outPatientRemainingBalance}</Box>
+            );
+        },
+    },
+    {
+        accessorKey: "benefitTypeUsed",
+        header: () => (
+            <Flex className="text-black text-start gap-1">
+                <h1 className="text-[#525252]">Benefit Type Used</h1>
+                <Stack className="gap-0 leading-3">
+                    <TiArrowSortedUp className="size-3.5 text-[#525252]" />
+                    <TiArrowSortedDown className="size-3.5 text-[#525252] -mt-1.5" />
+                </Stack>
+            </Flex>
+        ),
+        cell: ({ row }) => {
+            return (
+                <Box className=" text-start">{row.original.benefitTypeUsed}</Box>
             );
         },
     },
@@ -233,9 +287,12 @@ export const columns = (): ColumnDef<Data>[] => [
                         { label: "Employee ID", key: "EmployeeId" },
                         { label: "Patient Name", key: "PatientName" },
                         { label: "Hospital", key: "HospitalName" },
-                        { label: "Amount", key: "Amount" },
+                        { label: "In-Patient Invoice Amount", key: "inPatientInvoiceAmount" },
+                        { label: "Out-Patient Invoice Amount", key: "outPatientInvoiceAmount" },
+                        { label: "In-Patient Remaining Balance", key: "inPatientRemainingBalance" },
+                        { label: "Out-Patient Remaining Balance", key: "outPatientRemainingBalance" },
                         { label: "Benefit Used", key: "BenefitUsed" },
-                        { label: "Remaining Balance", key: "RemainingBalance" },
+                        { label: "Benefit Type Used", key: "benefitTypeUsed" },
                         { label: "Submitted Date", key: "SubmittedDate" },
                     ]}
                     fileName={`invoice_${row.original.id}.pdf`}

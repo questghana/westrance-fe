@@ -31,7 +31,7 @@ const Empstats: React.FC<{ className?: string }> = ({ className }) => {
   // const { newEmployeeId, employee } = useAuthStore()
   const [employeeData, setEmployeeData] = useState<any>(null)
   const [loading, setLoading] = useState(false)
-
+  console.log(employeeData)
   const getEmployeeDashboardStats = async () => {
     try {
       setLoading(true)
@@ -62,7 +62,7 @@ const Empstats: React.FC<{ className?: string }> = ({ className }) => {
       link: "",
       title: "Total Benefits Available",
       icon: Emptotalbenefit,
-      count: loading ? <Loader className="animate-spin" /> : employeeData?.benefits || "",
+      count: loading ? <Loader className="animate-spin" /> : employeeData?.benefits.join(", ") || "",
       bgColor: "#f5edfd",
       bgIconColor: "#e8dcfc",
       iconColor: "#715bc0",

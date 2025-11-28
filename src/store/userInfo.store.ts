@@ -14,8 +14,9 @@ export interface Employeedetails {
   employeeId: string;
   firstName: string;
   lastName: string;
-  amountPackage: string;
-  benefits: string;
+  inPatientAmount?: string;
+  outPatientAmount?: string;
+  benefits: string[];
   dependents?: string | null;
   duration: string;
   emailAddress: string;

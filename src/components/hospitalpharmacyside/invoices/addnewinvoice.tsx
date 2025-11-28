@@ -19,19 +19,14 @@ import { Loader } from 'lucide-react'
 import { axios } from '@/configs/axios.config'
 import { useAuthStore } from '@/store/userInfo.store'
 
-const Benefits = [
-  "In-Patient",
-  "Out-Patient",
-  "Virtual Primary Care",
-];
-
 
 const formSchema = z
   .object({
     PatientName: z.string().min(2, { message: "Patient Name must be at least 2 characters." }),
     EmployeeId: z.string().min(1, { message: "Employee ID is required" }),
-    Amount: z.string().min(2, { message: "Amount is required" }),
-    BenefitUsed: z.string().min(1, { message: "Select at least one benefit" }),
+    inPatientInvoiceAmount: z.string().optional(),
+    outPatientInvoiceAmount: z.string().optional(),
+    BenefitUsed: z.union([z.literal("In-Patient"), z.literal("Out-Patient")]).optional(),
     SubmittedDate: z.date({ required_error: "Starting date is required" }),
   })
 
@@ -62,18 +57,25 @@ const Addnewinvoice: React.FC = () => {
     defaultValues: {
       PatientName: "",
       EmployeeId: "",
-      Amount: "",
-      BenefitUsed: "",
+      inPatientInvoiceAmount: "",
+      outPatientInvoiceAmount: "",
+      BenefitUsed: "In-Patient", // Default to 'In-Patient'
       SubmittedDate: undefined,
     }
   });
 
-  const amount = form.watch("Amount")
-
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       setLoading(true)
-      const response = await axios.post("/hospital/addinvoice", values)
+      const response = await axios.post("/hospital/addinvoice", {
+        EmployeeId: values.EmployeeId,
+        PatientName: values.PatientName,
+        inPatientInvoiceAmount: values.inPatientInvoiceAmount,
+        outPatientInvoiceAmount: values.outPatientInvoiceAmount,
+        BenefitUsed: values.BenefitUsed,
+        SubmittedDate: values.SubmittedDate,
+        benefitTypeUsed: values.BenefitUsed
+      })
       toast.success(response.data.message)
       form.reset()
     } catch (error: any) {
@@ -198,11 +200,37 @@ const Addnewinvoice: React.FC = () => {
               )}
             />
 
-            {/* Amount + Benefits */}
+            {/* Benefits */}
             <Flex className='gap-4 '>
               <FormField
                 control={form.control}
-                name="Amount"
+                name="BenefitUsed"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      Benefit Used <span className="text-red-500">*</span>
+                    </FormLabel>
+                    <FormControl>
+                      <Select onValueChange={field.onChange} defaultValue={field.value || ""}>
+                        <SelectTrigger className="w-[350px] py-6 bg-[#F8F8F8]" >
+                          <SelectValue placeholder="Select benefits" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup >
+                            <SelectLabel>Select Benefits</SelectLabel>
+                            <SelectItem value="In-Patient">In-Patient</SelectItem>
+                            <SelectItem value="Out-Patient">Out-Patient</SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="inPatientInvoiceAmount"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
@@ -213,49 +241,13 @@ const Addnewinvoice: React.FC = () => {
                         className="lg:w-70 md:w-96 py-6 bg-[#F8F8F8] placeholder:font-bold"
                         placeholder="₵ 0.00"
                         {...field}
+                        value={String(field.value || '')}
                       />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-
-              <FormField
-                control={form.control}
-                name="BenefitUsed"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      Benefit Used <span className="text-red-500">*</span>
-                    </FormLabel>
-                    <FormControl>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <SelectTrigger className="w-[350px] py-6 bg-[#F8F8F8]" >
-                          <SelectValue placeholder="Select benefits" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup >
-                            <SelectLabel>Select Benefits</SelectLabel>
-                            {Benefits.map((benefit) => (
-                              <SelectItem key={benefit} value={benefit}>
-                                {benefit}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <Flex className='items-center ml-auto pr-6'>
-                <p>Amount (GHS) Package:</p>
-                <Box className='bg-[#DFFFFC] px-8 py-2 rounded-md'>
-                  <p>₵ {amount ? amount : "0.00"}</p>
-                </Box>
-              </Flex>
             </Flex>
 
             {/* Date Picker */}

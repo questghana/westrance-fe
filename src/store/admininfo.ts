@@ -63,8 +63,9 @@ type companyEmployeeinfo = {
   startingDate: Date;
   duration: string;
   dependents: string;
-  benefits: string;
-  amountPackage: string;
+  benefits: string[];
+  inPatientAmount: string;
+  outPatientAmount: string;
   profileImage: string;
   RoleName: string;
 }
