@@ -180,14 +180,14 @@ const Signin: React.FC = () => {
                   <p className="text-[#1E6EE5] text-sm mb-1 cursor-pointer" onClick={() => navigate("/forgotpassword")}>
                     Forgot Your Password?
                   </p>
-                  <p className="text-sm">
+                  {/* <p className="text-sm">
                     Don't have an account?{' '}
                     <span className="text-[#1E6EE5] text-sm cursor-pointer">
                       <Link to={'/company-detail'}>
                         Register now
                       </Link>
                     </span>
-                  </p>
+                  </p> */}
                 </Box>
               </CardContent>
             </form>
