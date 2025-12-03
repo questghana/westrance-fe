@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Box } from "../ui/box";
-import Signinimg from "/homeimg/Signin.png";
+// import Signinimg from "/homeimg/Signin.png";
+import Signinimg from "/login2.png"
 import Logo from "/Logo/logo.png";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { Label } from "../ui/label";
@@ -98,7 +99,7 @@ const Signin: React.FC = () => {
           backgroundImage: `url(${Signinimg})`,
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",
-          backgroundPositionX: "right"
+          backgroundPositionX: "right",
         }}
       ></Box>
 
