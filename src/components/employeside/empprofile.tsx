@@ -9,7 +9,7 @@ const Empprofile: React.FC = () => {
   return (
     <Box className="p-2 bg-white rounded-xl w-full">
       <Box className="px-2 py-2">
-        <p className="font-medium">Add New Depended</p>
+        <p className="font-medium">Add New Dependent</p>
         <Box className="flex flex-col lg:flex-row justify-between lg:items-center gap-3">
           <Box className="bg-[#F6FAFF] rounded-md lg:w-[700px] md:w-[450px] px-4 py-4 mt-2">
             <p>
@@ -19,7 +19,7 @@ const Empprofile: React.FC = () => {
             </p>
           </Box>
           <Box className="bg-[#FFF9E6] rounded-lg px-6 py-2 mt-2 text-center">
-            <p>Total Depended Allowed: {employee?.dependents}</p>
+            <p>Total Dependent Allowed: {employee?.dependents}</p>
           </Box>
         </Box>
         <Box className="pt-4">

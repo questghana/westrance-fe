@@ -154,7 +154,7 @@ const DependedForm: React.FC<{ index: number; totalForms: number; onAdd: () => v
     <Box className="pt-4">
       <Box className="flex gap-2 items-center">
         <p className="whitespace-nowrap font-medium">
-          Depended {index + 1}/{index === totalForms - 1 ? 0 : totalForms - 1}
+          Dependent {index + 1}/{index === totalForms - 1 ? 0 : totalForms - 1}
         </p>
         <Box className="border-[1px] border-[#D0D8ED] w-full" />
         {canAdd && (

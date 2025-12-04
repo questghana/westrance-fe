@@ -31,7 +31,6 @@ const Empstats: React.FC<{ className?: string }> = ({ className }) => {
   // const { newEmployeeId, employee } = useAuthStore()
   const [employeeData, setEmployeeData] = useState<any>(null)
   const [loading, setLoading] = useState(false)
-  console.log(employeeData)
   const getEmployeeDashboardStats = async () => {
     try {
       setLoading(true)
@@ -79,14 +78,13 @@ const Empstats: React.FC<{ className?: string }> = ({ className }) => {
     {
       link: "",
       title: "Remaining Balance",
-      icon: Empbalance,
-      count: loading ? <Loader className="animate-spin" /> : employeeData?.amountPackage || "",
+      icon: Empbalance ,
+      count: loading ? <Loader className="animate-spin" /> : (Number(employeeData?.inPatientAmount) + Number(employeeData?.outPatientAmount)) || "",
       bgColor: "#fff7ec",
       bgIconColor: "#fff2e0",
       iconColor: "#f0ac5c",
     },
   ];
-
   return (
     <Box className="bg-white p-3 rounded-2xl">
       <h1 className="font-[500]">Dashboard</h1>
