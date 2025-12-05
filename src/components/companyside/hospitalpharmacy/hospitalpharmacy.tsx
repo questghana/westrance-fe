@@ -266,7 +266,7 @@ const Hospitalpharmacy: React.FC = () => {
               data={companyDetail as any}
               columns={columns() as any}
               headerDescription="Manage all registered hospitals and pharmacies, track contact information, registration status, and maintain up-to-date records for seamless healthcare operations."
-              onRowClick={(row) => console.log("Row clicked:", row.original)}
+              // onRowClick={(row) => console.log("Row clicked:", row.original)}
               enableCompanyColumnVisibility={false}
               enableEmployeeColumnVisibility={false}
               searchInput={false}

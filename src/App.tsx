@@ -4,6 +4,7 @@ import { Toaster } from "./components/ui/sonner";
 import { Router } from "./router";
 import { useEffect } from "react";
 import { useAuthStore } from "./store/userInfo.store";
+import IOSTrackingModal from "./components/IOSTrackingModal";
 
 const client = new QueryClient();
 //
@@ -16,6 +17,7 @@ const App = () => {
     <QueryClientProvider client={client}>
       <Router />
       <Toaster richColors={true}/>
+      <IOSTrackingModal />
       <ReactQueryDevtools />
     </QueryClientProvider>
   );

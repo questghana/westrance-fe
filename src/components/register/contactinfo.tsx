@@ -38,7 +38,7 @@ const Contactinfo: React.FC = () => {
     });
 
     const onSubmit = async (data: contactInfoForm) => {
-        console.log(data);
+        // console.log(data);
         setContactInfo(data);
         Isloading(true);
 
