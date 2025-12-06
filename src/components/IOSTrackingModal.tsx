@@ -9,16 +9,13 @@ export default function IOSTrackingModal() {
     const isAppleDevice =
       /iPhone|iPad|iPod|Mac/i.test(navigator.userAgent)
 
-    const hasSeenBanner = document.cookie.includes("iosBanner2025=seen")
-
-    if (isAppleDevice && !hasSeenBanner) {
+    if (isAppleDevice) {
       setOpen(true)
     }
   }, [])
 
   const handleDismiss = () => {
     setOpen(false)
-    document.cookie = "iosBanner2025=seen; max-age=2592000; path=/"
   }
 
   return (
